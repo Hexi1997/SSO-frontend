@@ -6,7 +6,12 @@
   "author": "hexi1997 <18715156450@163.com>",
   "license": "MIT",
   "scripts": {
-    "start:backend": "yarn workspace backend run start"
+    "start:backend": "yarn workspace backend run start",
+    "start:frontend-sso": "yarn workspace frontend-sso run dev",
+    "start:app-demo1": "yarn workspace app-demo1 run dev",
+    "start:app-demo2": "yarn workspace app-demo2 run dev",
+    "start:frontend": "yarn start:frontend-sso & yarn start:app-demo1 & yarn start:app-demo2",
+    "start": "yarn start:backend & yarn start:frontend"
   },
   "workspaces": [
     "packages/backend",
