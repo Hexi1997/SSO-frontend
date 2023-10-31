@@ -6,8 +6,8 @@ const port = 3000;
 
 app.use(express.json());
 
-const accessTokenSecret = "youraccesstokensecret";
-const refreshTokenSecret = "yourrefreshtokensecrethere";
+const accessTokenSecret = "c1f497ae-0cf7-43fa-a29b-4a54e57f73da";
+const refreshTokenSecret = "c7c3815c-e8d4-4291-9aba-dd5e81cb139a";
 const refreshTokens: string[] = [];
 
 app.post("/login", (req, res) => {
@@ -15,7 +15,7 @@ app.post("/login", (req, res) => {
   const password = req.body.password;
 
   if (!username || !password || username !== "user" || password !== "123456") {
-    return res.status(401).send("用户名或密码不正确");
+    return res.status(401).send("password or username incorrect");
   }
 
   const accessToken = jwt.sign({ username: username }, accessTokenSecret, {
@@ -33,20 +33,37 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.post("/my", (req, res) => {
+  const tokenWithBearer = req.headers.authorization;
+  const accessToken = tokenWithBearer?.replace("Bearer ", "");
+  if (!accessToken) {
+    return res.status(401).send("access token");
+  }
+  jwt.verify(accessToken, accessTokenSecret, (err: any, user: any) => {
+    if (err) {
+      return res.status(403).send("access token verify failed");
+    }
+    return res.json({
+      name: user.username,
+      logo: "https://placehold.co/300x300?text=Avatar",
+    });
+  });
+});
+
 app.post("/refresh", (req, res) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    return res.status(401).send("未提供refresh token");
+    return res.status(401).send("no refresh token");
   }
 
   if (!refreshTokens.includes(refreshToken)) {
-    return res.status(403).send("refresh token不正确");
+    return res.status(403).send("refresh token incorrect");
   }
 
   jwt.verify(refreshToken, refreshTokenSecret, (err: any, user: any) => {
     if (err) {
-      return res.status(403).send("refresh token验证失败");
+      return res.status(403).send("refresh token verify failed");
     }
     const newAccessToken = jwt.sign(
       { username: user.username },
@@ -69,5 +86,5 @@ app.post("/refresh", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`服务器正在监听端口${port}`);
+  console.log(`server started: http://localhost:${port}`);
 });
