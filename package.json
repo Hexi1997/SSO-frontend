@@ -1,0 +1,17 @@
+{
+  "name": "sso-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "repository": "git@github.com:Hexi1997/SSO-frontend.git",
+  "author": "hexi1997 <18715156450@163.com>",
+  "license": "MIT",
+  "scripts": {
+    "start:backend": "yarn workspace backend run start"
+  },
+  "workspaces": [
+    "packages/backend",
+    "packages/frontend-sso",
+    "packages/app-demo1",
+    "packages/app-demo2"
+  ]
+}
