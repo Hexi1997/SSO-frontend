@@ -1,10 +1,10 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-
+import cors from "cors";
 const app = express();
 const port = 3000;
 
-app.use(express.json());
+app.use(express.json()).use(cors());
 
 const accessTokenSecret = "c1f497ae-0cf7-43fa-a29b-4a54e57f73da";
 const refreshTokenSecret = "c7c3815c-e8d4-4291-9aba-dd5e81cb139a";
@@ -37,7 +37,7 @@ app.post("/my", (req, res) => {
     }
     return res.json({
       name: user.username,
-      logo: "https://placehold.co/300x300?text=Avatar",
+      avatar: "https://placehold.co/300x300?text=Avatar",
     });
   });
 });
@@ -55,6 +55,7 @@ app.post("/refresh", (req, res) => {
 
   jwt.verify(refreshToken, refreshTokenSecret, (err: any, user: any) => {
     if (err) {
+      console.dir(err);
       return res.status(403).send("refresh token verify failed");
     }
     const newAccessToken = generateAccessToken(user.username);
@@ -69,13 +70,13 @@ app.post("/refresh", (req, res) => {
 
 function generateAccessToken(username: string) {
   return jwt.sign({ username: username }, accessTokenSecret, {
-    expiresIn: "20m",
+    expiresIn: "20s",
   });
 }
 
 function generateRefreshToken(username: string) {
   return jwt.sign({ username: username }, refreshTokenSecret, {
-    expiresIn: "48h",
+    expiresIn: "10min",
   });
 }
 
